@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8" /><style>
 body { background-color: #abcdef; height: 100vh;
-	background: radial-gradient(ellipse at 160% 110%, #468ace 0%, #abcdef 100%)
+	background: radial-gradient(ellipse at 160% 110%, #468ace 0%, #abcdef 100%);
+	font-family: sans-serif; font-weight: bold;
 }
+@keyframes red { from { text-shadow: 0 0 4em #000000; color: #ff0000; } }
+@keyframes green { from { text-shadow: 0 0 4em #000000; color: #00ff00; } }
 .midc { fill: rgb(224,224,224); stroke-width: 2; stroke: black }
 .midc:hover { fill: blue }
 .white { fill: white; stroke-width: 2; stroke: black }
 .white:hover { fill: blue }
 .black { fill: black }
 .black:hover { fill: blue }
+.red { text-shadow: 0 0 0.3em #ff0000; color: #ffc0c0; animation: red 1s; }
+.green { text-shadow: 0 0 0.3em #00ff00; color: #c0ffc0; animation: green 1s; }
+.blue { text-shadow: 0 0 0.3em #0000ff; color: #c0c0ff; }
+h2 span { margin: 1em }
 </style>
 <script>
 const nrec = {}; // global but is populated during makeKbd
@@ -78,16 +85,19 @@ function showNote(n, o, a) {
 }
 function guessNote(g) {
 	if (lowest) {
-		total++;
+		document.getElementById("total").innerHTML = "Guesses: " + ++total;
 		if (g==ans) {
-			correct++;
+			var c1 = document.getElementById("correct");
+			var c2 = c1.cloneNode(true);
+			c2.innerHTML = "Correct: " + ++correct;
+			c1.parentNode.replaceChild(c2, c1); // to force animation replay
 			pickNote(lowest, highest, accs);
 		} else {
-			wrong++;
-			window.alert("Wrong. Try Again.");
+			var w1 = document.getElementById("wrong");
+			var w2 = w1.cloneNode(true);
+			w2.innerHTML = "Wrong: " + ++wrong;
+			w1.parentNode.replaceChild(w2, w1); // to force animation replay
 		}
-		document.getElementById("score").innerHTML =
-			"Guesses: " + total + "&nbsp;Correct: " + correct + "&nbsp;Wrong: " + wrong;
 	} else {
 		window.alert("Please choose a skill level first.");
 	}
@@ -190,4 +200,9 @@ function pickNote(l, h, a) { // pick a playable note within range
 			c-28 0 -39 -32 -40 -63z" fill="currentColor"/>
 	</svg><br/><svg xmlns="http://www.w3.org/2000/svg" id="autokbd" />
 	<script>makeKbd(4,0.7);clearStave();</script>
-</div><h2 align="center" id="score" /></body></html>
+</div>
+<h2 align="center" id="score">
+	<span id="total" class="blue"></span>
+	<span id="correct" class="green"></span>
+	<span id="wrong" class="red"></span>
+</h2></body></html>
